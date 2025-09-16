@@ -1,0 +1,23 @@
+name: Deploy to Preprod
+on: workflow_dispatch
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy on server
+        uses: appleboy/ssh-action@v0.1.8
+        with:
+          host: ${{ secrets.SERVER_IP }}
+          username: ${{ secrets.DEPLOY_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            git clone https://https://github.com/VKNagibin/chess-deploy.git /tmp/deploy-chess
+            
+            sudo cp -r /tmp/deploy-chess/preprod/* /home/${{ secrets.DEPLOY_USER }}/chess-preprod/
+            
+            rm -rf /tmp/deploy-chess
+            
+            cd /home/${{ secrets.DEPLOY_USER }}/chess-preprod
+            docker compose pull
+            docker compose up -d
