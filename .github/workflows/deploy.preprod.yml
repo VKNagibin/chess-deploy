@@ -1,23 +1,42 @@
-name: Deploy to Preprod
+name: Deploy to Pre-prod
 on: workflow_dispatch
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    steps:
+    steps: 
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Clean target directory on server
+        uses: appleboy/ssh-action@v0.1.8
+        with:
+          host: ${{ secrets.SERVER_IP }}
+          username: ${{ secrets.DEPLOY_USER }}
+          key: ${{ secrets.DEPLOY_KEY }}
+          script: |
+            cd /home/deploy/chess-preprod
+            rm -rf *
+
+      - name: Copy files to server
+        uses: appleboy/scp-action@v0.1.3
+        with:
+          host: ${{ secrets.SERVER_IP }}
+          username: ${{ secrets.DEPLOY_USER }}
+          key: ${{ secrets.DEPLOY_KEY }}
+          source: "preprod/*"
+          target: "/home/deploy/chess-preprod/"
+          strip_components: 1 
+
       - name: Deploy on server
         uses: appleboy/ssh-action@v0.1.8
         with:
           host: ${{ secrets.SERVER_IP }}
           username: ${{ secrets.DEPLOY_USER }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          key: ${{ secrets.DEPLOY_KEY }} 
+
           script: |
-            git clone https://https://github.com/VKNagibin/chess-deploy.git /tmp/deploy-chess
-            
-            sudo cp -r /tmp/deploy-chess/preprod/* /home/${{ secrets.DEPLOY_USER }}/chess-preprod/
-            
-            rm -rf /tmp/deploy-chess
-            
-            cd /home/${{ secrets.DEPLOY_USER }}/chess-preprod
+            cd /home/deploy/chess-preprod
+            docker compose down
             docker compose pull
             docker compose up -d

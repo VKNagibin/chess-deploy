@@ -2,36 +2,34 @@ version: '3.8'
 
 services:
   backend:
-    image: your-dockerhub-username/backend-app:staging # Тег 'staging' для latest build
-    container_name: myapp-backend-preprod
-    restart: unless-stopped
-    env_file:
-      - ./.env
+    image: itisnotstupid/chess-backend:latest
+    container_name: preprod-chess-backend
+    restart: always
     networks:
-      - myapp-preprod-network
+      - preprod-network
 
   frontend:
-    image: your-dockerhub-username/frontend-app:staging
-    container_name: myapp-frontend-preprod
-    restart: unless-stopped
+    image: itisnotstupid/chess-frontend:latest
+    container_name: preprod-chess-frontend
+    restart: always
     networks:
-      - myapp-preprod-network
+      - preprod-network
 
   nginx:
     image: nginx:alpine
-    container_name: myapp-nginx-preprod
-    restart: unless-stopped
+    container_name: preprod-nginx
+    restart: always
     ports:
-      - "8080:80"    # PREPROD слушает на порту 8080
+      - "1188:80"
     volumes:
-      - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
     depends_on:
       - backend
       - frontend
     networks:
-      - myapp-preprod-network
+      - preprod-network
 
 networks:
-  myapp-preprod-network:
+  preprod-network:
     driver: bridge
-    name: myapp-preprod-network
+    name: preprod-network
