@@ -9,7 +9,7 @@ services:
       - chess-network
 
   frontend:
-    image: itisnotstupid/chess-frontend:latest
+    image: itisnotstupid/chess-frontend:1.0.3
     container_name: chess-frontend
     restart: always
     networks:
