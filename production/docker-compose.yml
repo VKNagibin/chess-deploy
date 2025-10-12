@@ -8,8 +8,8 @@ services:
     networks:
       - chess-network
 
-  frontend:
-    image: itisnotstupid/chess-frontend:1.0.7
+  frontend: 
+    image: itisnotstupid/chess-frontend:1.0.8
     container_name: chess-frontend
     restart: always
     networks:
