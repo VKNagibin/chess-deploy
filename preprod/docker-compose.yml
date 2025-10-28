@@ -9,7 +9,7 @@ services:
       - preprod-network
 
   frontend:
-    image: itisnotstupid/chess-frontend:1.0.8
+    image: itisnotstupid/chess-frontend:1.0.9
     container_name: preprod-chess-frontend
     restart: always
     networks:
