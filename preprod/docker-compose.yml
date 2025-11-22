@@ -20,9 +20,12 @@ services:
     container_name: preprod-nginx
     restart: always
     ports:
-      - "1188:80"
+      - "1187:80"
+      - "1188:443" 
     volumes:
-      - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro 
+      - ../certbot-webroot:/var/www/certbot:ro 
+      - ../certs:/etc/nginx/certs:ro
     depends_on:
       - backend
       - frontend
